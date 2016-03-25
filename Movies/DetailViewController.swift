@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import iAd
 
 class DetailViewController: UIViewController ,UITableViewDelegate,UITableViewDataSource {
 
@@ -64,6 +65,7 @@ class DetailViewController: UIViewController ,UITableViewDelegate,UITableViewDat
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.canDisplayBannerAds = true
        
         movie = self.detailItem as? Movie
         genres_detail.delegate = self

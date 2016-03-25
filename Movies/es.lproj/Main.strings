@@ -1,0 +1,66 @@
+
+/* Class = "UILabel"; text = "Titulo"; ObjectID = "1yF-B5-aeD"; */
+"1yF-B5-aeD.text" = "Titulo";
+
+/* Class = "UILabel"; text = "0.0"; ObjectID = "3Pd-cS-2xb"; */
+"3Pd-cS-2xb.text" = "0.0";
+
+/* Class = "UITableViewController"; title = "Master"; ObjectID = "7bK-jq-Zjz"; */
+"7bK-jq-Zjz.title" = "Master";
+
+/* Class = "UILabel"; text = "Description"; ObjectID = "EEV-bP-TN2"; */
+"EEV-bP-TN2.text" = "Descripcion";
+
+/* Class = "UIBarButtonItem"; title = "Movies"; ObjectID = "Fgr-fA-40T"; */
+"Fgr-fA-40T.title" = "Peliculas";
+
+/* Class = "UIViewController"; title = "Detail"; ObjectID = "JEX-9P-axG"; */
+"JEX-9P-axG.title" = "Detalle";
+
+/* Class = "UINavigationController"; title = "Master"; ObjectID = "RMx-3f-FxP"; */
+"RMx-3f-FxP.title" = "Principal";
+
+/* Class = "UILabel"; text = "Rate"; ObjectID = "TqV-R4-hrY"; */
+"TqV-R4-hrY.text" = "Calificacion";
+
+/* Class = "UISegmentedControl"; Uwc-yg-tfp.segmentTitles[0] = "Popular"; ObjectID = "Uwc-yg-tfp"; */
+"Uwc-yg-tfp.segmentTitles[0]" = "Popular";
+
+/* Class = "UISegmentedControl"; Uwc-yg-tfp.segmentTitles[1] = "Top Rated"; ObjectID = "Uwc-yg-tfp"; */
+"Uwc-yg-tfp.segmentTitles[1]" = "Mas votadas";
+
+/* Class = "UILabel"; text = "Title"; ObjectID = "XCi-8e-c9l"; */
+"XCi-8e-c9l.text" = "Titulo";
+
+/* Class = "UILabel"; text = "vote"; ObjectID = "XmA-qC-WD1"; */
+"XmA-qC-WD1.text" = "Voto";
+
+/* Class = "UINavigationItem"; prompt = "Popular Movies"; ObjectID = "Zdf-7t-Un8"; */
+"Zdf-7t-Un8.prompt" = "Peliculas populares";
+
+/* Class = "UILabel"; text = "Release date"; ObjectID = "hWm-M8-rRY"; */
+"hWm-M8-rRY.text" = "Fecha estreno";
+
+/* Class = "UINavigationItem"; title = "Movie"; ObjectID = "jhf-BC-eXN"; */
+"jhf-BC-eXN.title" = "Pelicula";
+
+/* Class = "UILabel"; text = "Title"; ObjectID = "n6i-vo-pSE"; */
+"n6i-vo-pSE.text" = "Titulo";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "nDg-hK-acO"; */
+"nDg-hK-acO.text" = "Label";
+
+/* Class = "UILabel"; text = "Rate"; ObjectID = "pQA-ze-j2m"; */
+"pQA-ze-j2m.text" = "calificacion";
+
+/* Class = "UILabel"; text = "Genres:"; ObjectID = "qfX-FR-rhm"; */
+"qfX-FR-rhm.text" = "Generos:";
+
+/* Class = "UILabel"; text = "Rate:"; ObjectID = "uUB-6e-h5t"; */
+"uUB-6e-h5t.text" = "Rate:";
+
+/* Class = "UINavigationController"; title = "Popular"; ObjectID = "vC3-pB-5Vb"; */
+"vC3-pB-5Vb.title" = "Popular";
+
+/* Class = "UILabel"; text = "Vote Average"; ObjectID = "wgD-CK-VXY"; */
+"wgD-CK-VXY.text" = "Voto promedio";

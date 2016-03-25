@@ -18,11 +18,13 @@ class Movie:NSObject {
     var image_movie_backdrop: String = ""
     var image_movie_backdrop_imgg: UIImage!
     var rate_movie:Float=0.0
+    var vote_average:Float=0.0
     var detail_movie:String=""
     var imgg: UIImage!
     var genres: [Int] = [];
     var genres_object:[Genre]=[];
     var release_date:String=""
+    
     
 }
 

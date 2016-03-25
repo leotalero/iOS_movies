@@ -15,7 +15,9 @@ class TableViewCell: UITableViewCell {
     
     @IBOutlet weak var detail_: UILabel!
 
+    @IBOutlet weak var indicator: UIActivityIndicatorView!
     
+    @IBOutlet weak var vote: UILabel!
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

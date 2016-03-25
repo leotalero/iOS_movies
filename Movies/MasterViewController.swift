@@ -9,13 +9,17 @@
 import UIKit
 import Alamofire
 import SwiftyJSON
+import iAd
 //import SwiftyJSON
 
 
 
-class MasterViewController: UITableViewController {
+class MasterViewController: UITableViewController ,ADBannerViewDelegate {
     var movies:Array<Movie>?
+    var moviesTOP:Array<Movie>?
+    
     var moviesWrapper:MovieWrapper? // holds the last wrapper that we've loaded
+   
     var genres:Array<Genre>?
     var genresWrapper:GenreWrapper? // holds the last wrapper that we've loaded
     
@@ -23,22 +27,49 @@ class MasterViewController: UITableViewController {
     var isLoadingGenres = false
     var populatingMovies = false,errorLoadingMovies=false
     var currentPage = 1
-   
+    var currentPageTOP = 1
     @IBOutlet var tableview: UITableView!
+    
+    @IBOutlet weak var segmented: UISegmentedControl!
     
     var detailViewController: DetailViewController? = nil
     
     var objects = [AnyObject]()
     var MovieCache_ = Dictionary<String, Movie>()
+   
+    
+    
     let moviewrapperCache = NSCache()
     var imageCache = NSCache()
     let genreCache = NSCache()
     let scrollView = UIScrollView()
     let spinner = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
+    var flag_ = false
+    var listadopopular = List_Page();
+    var listadoTOP = List_Page();
+    var listadoclase = Array<List_Page>();
+    let mediumRectAdView = ADBannerView(adType: ADAdType.MediumRectangle) //Create banner
+   // var bannerView: ADBannerView!
+    let banner = ADBannerView(adType: .Banner)
     
+ 
     
     override func viewDidLoad() {
         super.viewDidLoad()
+      
+        //self.canDisplayBannerAds = true
+        //mediumRectAdView!.delegate = self;
+        
+        
+        
+        
+        
+        self.listadopopular.listado="Popular"
+        self.listadopopular.pages=Array<Int>();
+        self.listadoTOP.listado="TOP"
+        self.listadoTOP.pages=Array<Int>();
+        self.listadoclase.append(self.listadopopular)
+        self.listadoclase.append(self.listadoTOP)
         if((self.genreCache.objectForKey("genres")) == nil){
             self.loadGenres();
 
@@ -59,12 +90,9 @@ class MasterViewController: UITableViewController {
         
         // Do any additional setup after loading the view, typically from a nib.
        // self.navigationItem.leftBarButtonItem = self.editButtonItem()
-   
         if let split = self.splitViewController {
             let controllers = split.viewControllers
             self.detailViewController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? DetailViewController
-           
-           
         }
         
        // let indexpath=NSIndexPath(forRow: 0, inSection: 0);
@@ -73,7 +101,21 @@ class MasterViewController: UITableViewController {
         
     }
     
+    
+    //Delegate methods for AdBannerView
+    
+ 
+    
+    func bannerViewDidLoadAd(banner: ADBannerView!) {
+        self.view.addSubview(banner)
+    }
+    
+    func bannerView(banner: ADBannerView!, didFailToReceiveAdWithError error: NSError!) {
+        banner.removeFromSuperview()
+    }
     func setupView() {
+       
+        
       
     }
 
@@ -81,6 +123,8 @@ class MasterViewController: UITableViewController {
     override func viewWillAppear(animated: Bool) {
         self.clearsSelectionOnViewWillAppear = self.splitViewController!.collapsed
         super.viewWillAppear(animated)
+        self.canDisplayBannerAds = true
+        self.banner.delegate = self
        /* let myPath = NSIndexPath(forRow: 0, inSection: 0)
         self.tableview.selectRowAtIndexPath(myPath, animated: false, scrollPosition:UITableViewScrollPosition.None )*/
        
@@ -105,9 +149,9 @@ class MasterViewController: UITableViewController {
         
         let movie:Movie = Movie();
         
-        movie.title_movie = "Pelicula dsadasdasd....dasdasd das....dasdasdad";
+        movie.title_movie = "";
         movie.rate_movie = 8.45;
-        movie.detail_movie = "Pelicula dsadasdasd....dasdasd das....dasdasdadkdasmdmsadmsa dsadnskandksandknasdsandmsndm s,m d,s ad sdsd dsdskandkasdlkasmdlkdsadsads .........dsada.sd.s.dsd.s.d.sad.as.d.sa.d.asdsakdksandnsakdnsandsnd0009999999sdakjsndkasdmamsd as d asdm,as dms";
+        movie.detail_movie = "";
         movie.image_movie = "";
         movie.imgg=UIImage(named: "buddy.jpg");
         
@@ -155,37 +199,45 @@ class MasterViewController: UITableViewController {
         
         cell.title_!.text = object.title_movie;
         cell.detail_!.text = object.rate_movie.description;
+        cell.vote.text=object.vote_average.description;
+        cell.image_.image=nil
+        
+        cell.indicator.startAnimating()
         let imageURL = object.image_movie
         
-        if((self.imageCache.objectForKey(object.id)) != nil){
-        //if(object.imgg != nil){
-        //    cell.image_.image = object.imgg;
+        if(object.imgg != nil)
+        {
+        cell.image_.image = object.imgg
+        self.imageCache.setObject(object.imgg!, forKey: object.id)
+            cell.indicator.stopAnimating()
+        }else if((self.imageCache.objectForKey(object.id)) != nil){
             cell.image_.image=self.imageCache.objectForKey(object.id) as? UIImage;
+              cell.indicator.stopAnimating()
         }else{
-           
+        
              Alamofire.request(.GET, imageURL).response() {
                 (_, _, data, _) in
                 
                 let image = UIImage(data: data!)
                 cell.image_.image = image
-                self.imageCache.setObject(image!, forKey: object.id)
-                
-                object.imgg=image
-                if(self.moviesWrapper != nil){
-                   self.moviewrapperCache.setObject(self.moviesWrapper!, forKey: "moviesgrapper")
+                  cell.indicator.stopAnimating()
+                if(image != nil){
+                   self.imageCache.setObject(image!, forKey: object.id)
+                     object.imgg=image
                 }
                
+                
+               
+                
             }
             
         }
-        if ((self.moviesWrapper?.movies?.contains(object)) != nil){
-            
-            
-        }else{
-            
+        if(self.moviesWrapper != nil){
+            self.moviewrapperCache.setObject(self.moviesWrapper!, forKey: "moviesgrapper")
         }
-        
-        
+
+       
+        cell.indicator.hidesWhenStopped=true
    
         return cell
     }
@@ -250,12 +302,15 @@ class MasterViewController: UITableViewController {
                 if(self.genres != nil){
                   
                     
-                    for genre_int in  movie.genres{
-                        
-                       let genrenew=self.genreCache.objectForKey(genre_int) as? Genre;
-                        movie.genres_object.append(genrenew!)
-                        
+                    if(movie.genres_object.isEmpty){
+                        for genre_int in  movie.genres{
+                            
+                            let genrenew=self.genreCache.objectForKey(genre_int) as? Genre;
+                            movie.genres_object.append(genrenew!)
+                            
+                        }
                     }
+                    
                    
                    
                 }
@@ -265,6 +320,89 @@ class MasterViewController: UITableViewController {
         
         
     }
+    
+    
+    func addMoviesFromWrapperTOP(wrapper: MovieWrapper?)
+    {
+        self.moviesWrapper = wrapper
+        if self.moviesTOP == nil
+        {
+            self.moviesTOP = self.moviesWrapper?.movies
+        }
+        else if self.moviesWrapper != nil && self.moviesWrapper!.movies != nil
+        {
+            self.moviesTOP = self.moviesTOP! + self.moviesWrapper!.movies!
+            
+        }
+        
+        if(self.moviesTOP != nil){
+            objects.removeAll();
+            
+            for movie in self.moviesTOP!{
+                if(self.genres != nil){
+                    
+                    
+                    if(movie.genres_object.isEmpty){
+                        for genre_int in  movie.genres{
+                            
+                            let genrenew=self.genreCache.objectForKey(genre_int) as? Genre;
+                            movie.genres_object.append(genrenew!)
+                            
+                        }
+                    }
+                    
+                    
+                    
+                }
+                objects.append(movie);
+            }
+        }
+        
+        
+    }
+
+    func addMoviesFromMemory(arreglo: Array<Movie>?)
+    {
+       /*  self.moviesWrapper = wrapper
+        if self.moviesTOP == nil
+        {
+            self.moviesTOP = self.moviesWrapper?.movies
+        }
+        else if self.moviesWrapper != nil && self.moviesWrapper!.movies != nil
+        {
+            self.moviesTOP = self.moviesTOP! + self.moviesWrapper!.movies!
+            
+        }
+        */
+
+        if(arreglo != nil){
+            objects.removeAll();
+            
+            for movie in arreglo!{
+                if(self.genres != nil){
+                    
+                    
+                    if(movie.genres_object.isEmpty){
+                        for genre_int in  movie.genres{
+                            
+                            let genrenew=self.genreCache.objectForKey(genre_int) as? Genre;
+                            movie.genres_object.append(genrenew!)
+                            
+                        }
+                    }
+                    
+                    
+                    
+                }
+                objects.append(movie);
+            }
+        }
+        self.tableview?.reloadData()
+        
+        
+    }
+    
+
     
     func addGenresFromWrapper(wrapper: GenreWrapper?)
     {
@@ -288,6 +426,9 @@ class MasterViewController: UITableViewController {
             for genre in self.genres!{
                    self.genreCache.setObject(genre, forKey: genre.id)
             }
+        }else{
+            //self.loadGenres();
+    
         }
         
         
@@ -310,8 +451,16 @@ class MasterViewController: UITableViewController {
         
         populatingMovies = true
         isLoadingMovies = true
-        
-            ApiController.getMoreMovies (self.currentPage.description, completionHandler: { wrapper, error in
+        var page=""
+       // let a:Int? = Int(self.currentPage)
+        if(!flag_){
+            page=self.currentPage.description
+        }else{
+            page=self.currentPageTOP.description
+        }
+
+    
+            ApiController.getMoreMovies (self.listadoclase,page:page ,flag_: self.flag_,completionHandler: { wrapper, error in
                 if let error = error
                 {
                     // TODO: improved error handling
@@ -331,10 +480,22 @@ class MasterViewController: UITableViewController {
                    
                 }else{
                      self.errorLoadingMovies=false
-                    
-                    self.addMoviesFromWrapper(wrapper)
+                    if(!self.flag_){
+                        self.addMoviesFromWrapper(wrapper)
+                        //self.list_pages_loaded?.List_pages
+                        //self.list_pages_loaded["Popular"] = wrapper?.page;
+                        
+                        self.listadopopular.pages?.append((wrapper?.page)!);
+                        self.currentPage++
+                    }else{
+                        self.addMoviesFromWrapperTOP(wrapper)
+                         self.listadoTOP.pages?.append((wrapper?.page)!);
+                        self.currentPageTOP++
+                        //self.list_pages_loaded["Top_rated"] = wrapper?.page;
+                    }
+                    //self.addMoviesFromWrapper(wrapper)
                     self.isLoadingMovies = false
-                    self.currentPage++
+                    
                     self.populatingMovies=false;
                     
                     
@@ -342,7 +503,6 @@ class MasterViewController: UITableViewController {
                     /*if(!self.isLoadingMovies){
                     self.spinner.stopAnimating();
                     }*/
-                    
                     self.tableview?.reloadData()
                 }
                 
@@ -355,7 +515,40 @@ class MasterViewController: UITableViewController {
   
      
 
-    
+    @IBAction func segmentaction(sender: AnyObject) {
+       let k = segmented.selectedSegmentIndex;
+        //var listado_seleccionado = List_Page()
+        if(k==0){
+            flag_=false
+            self.currentPage=1
+            //listado_seleccionado=self.listadoclase.first!;
+            // self.populateMovies()
+            //if(listado_seleccionado.pages!.contains(self.currentPage)){
+                
+            //}else{
+            if(self.movies != nil){
+                addMoviesFromMemory(self.movies)
+            }else{
+                self.populateMovies()
+            }            //}
+        }else{
+            flag_=true
+            self.currentPageTOP=1
+           //  listado_seleccionado=self.listadoclase.last!;
+           // if(listado_seleccionado.pages!.contains(self.currentPageTOP)){
+                
+           // }else{
+           //     self.populateMovies()
+           // }
+            if(self.moviesTOP != nil){
+                addMoviesFromMemory(self.moviesTOP)
+            }else{
+            self.populateMovies()
+            }
+        }
+       
+        
+    }
 
     
     
